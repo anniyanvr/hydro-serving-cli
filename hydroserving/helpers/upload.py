@@ -14,7 +14,7 @@ def upload_model(model_api, model):
 
     contract = None
     if model_metadata.model_contract is not None:
-        contract = model_metadata.model_contract.SerializeToString()
+        contract = str(model_metadata.model_contract)
 
     metadata = UploadMetadata(
         model_name=model_metadata.model_name,
