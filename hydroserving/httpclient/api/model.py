@@ -1,16 +1,25 @@
 from hydroserving.httpclient.errors import HSApiError
+import json
 
 
 class UploadMetadata:
-    def __init__(self, model_name, model_type, model_contract, description):
-        self.model_description = description
-        self.model_contract = model_contract
-        self.model_type = model_type
-        self.model_name = model_name
+    """
+    This class represents `ModelUpload` data structure in manager.
+    Field names must be the same.
+
+    NOTE: Manager expects JSON fields in camelCase
+    """
+    def __init__(self, model_name, model_type, model_contract, description, namespace, data_profile_types):
+        self.description = description
+        self.contract = model_contract
+        self.modelType = model_type
+        self.name = model_name
+        self.namespace = namespace
+        self.dataProfileTypes = data_profile_types
 
     def to_dict(self):
         res = {}
-        for k,v in self.__dict__.items():
+        for k, v in self.__dict__.items():
             if v is None:
                 continue
             res[k] = v
@@ -36,8 +45,10 @@ class ModelAPI:
 
         return self.connection.multipart_post(
             url="/api/v1/model/upload",
-            data=metadata.to_dict(),
-            files={"payload": ("filename", open(assembly_path, "rb"))},
+            fields={
+                "metadata": json.dumps(metadata.to_dict()),
+                "payload": (metadata.name, open(assembly_path, "rb"))
+            },
             create_encoder_callback=create_encoder_callback
         )
 

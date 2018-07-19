@@ -8,7 +8,12 @@ from hydroserving.helpers.contract import read_contract_cwd
 
 
 def get_subfiles(path):
-    return [os.path.join(dir_name, file) for dir_name, _, files in os.walk(path) for file in files]
+    result = []
+    for root, dirs, files in os.walk(path):
+        files = [os.path.join(root, f) for f in files if not f[0] == '.']
+        dirs[:] = [d for d in dirs if not d[0] == '.']
+        result += files
+    return result
 
 
 def get_payload_files(payload):
@@ -18,8 +23,7 @@ def get_payload_files(payload):
             files.append(x)
         else:
             sub_files = get_subfiles(x)
-            for sub_file in sub_files:
-                files.append(sub_file)
+            files = files + sub_files
     return files
 
 
@@ -85,7 +89,7 @@ def with_cwd(new_cwd, func, *args):
         result = func(*args)
         os.chdir(old_cwd)
         return result
-    except RuntimeError as err:
+    except Exception as err:
         os.chdir(old_cwd)
         raise err
 

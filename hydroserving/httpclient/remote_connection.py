@@ -31,9 +31,9 @@ class RemoteConnection:
         result = requests.get(self.compose_url(url))
         return self._to_json(result)
 
-    def multipart_post(self, url, data, files, create_encoder_callback=None):
+    def multipart_post(self, url, fields, create_encoder_callback=None):
         encoder = MultipartEncoder(
-            fields={**data, **files}
+            fields=fields
         )
 
         callback = None

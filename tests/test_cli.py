@@ -11,13 +11,13 @@ from hydroserving.cli import hs_cli
 from hydroserving.helpers.package import with_cwd
 from hydroserving.helpers.upload import upload_model
 from hydroserving.httpclient import HydroservingClient
-from hydroserving.models import FolderMetadata
+from hydroserving.models import ServingMetadata
 
 MODEL_FOLDER = "./examples/local_dev"
 
 
 def build_example(hs_api):
-    meta = FolderMetadata.from_directory(os.getcwd())
+    meta = ServingMetadata.from_directory(os.getcwd())
     return upload_model(hs_api.models, meta.model)
 
 
@@ -30,21 +30,23 @@ class CLICase(unittest.TestCase):
             assert result.exit_code == 0
 
     def test_correct_status(self):
-        runner = CliRunner()
-        old_cwd = os.getcwd()
-        os.chdir(MODEL_FOLDER)
-        result = runner.invoke(hs_cli, ["status"])
-        assert result.exit_code == 0
-        assert "Detected a model: example_script" in result.output
-        os.chdir(old_cwd)
+        def _test_correct_status():
+            runner = CliRunner()
+            result = runner.invoke(hs_cli, ["status"])
+            assert result.exit_code == 0
+            assert "Model metadata:" in result.output
+            assert "'name': 'example_script'" in result.output
+        with_cwd(MODEL_FOLDER, _test_correct_status)
 
     def upload_matcher(self, request):
         if request.path_url == "/api/v1/model/upload":
             fields = request.text.encoder.fields
-            assert 'model_contract' in fields
-            assert 'payload' in fields
-            assert fields['model_type'] == "python:3.6"
-            assert fields["model_name"] == "example_script"
+            assert "payload" in fields
+
+            metadata_field = json.loads(fields['metadata'])
+            assert 'modelContract' not in metadata_field
+            assert metadata_field['modelType'] == "python:3.6"
+            assert metadata_field["name"] == "example_script"
             resp = requests.Response()
             resp.status_code = 200
             resp._content = json.dumps(

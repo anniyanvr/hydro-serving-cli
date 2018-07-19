@@ -1,3 +1,5 @@
+import pprint
+
 from hydroserving.httpclient.api import UploadMetadata
 from hydroserving.helpers.assembly import assemble_model
 from hydroserving.models.model_metadata import ModelMetadata
@@ -17,9 +19,14 @@ def upload_model(model_api, model):
     metadata = UploadMetadata(
         model_name=model_metadata.model_name,
         model_type=model_metadata.model_type,
-        model_contract=contract,
-        description=model_metadata.description
+        model_contract=contract if contract else None,
+        description=model_metadata.description,
+        namespace=model_metadata.namespace,
+        data_profile_types=None
     )
+    click.echo("Upload request metadata:")
+    click.echo(pprint.pformat(metadata.to_dict()))
+    click.echo()
 
     with click.progressbar(length=1, label='Uploading model assembly')as bar:
         create_encoder_callback = create_bar_callback_factory(bar)

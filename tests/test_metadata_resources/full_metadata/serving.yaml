@@ -1,0 +1,21 @@
+model:
+  name: "full_model"
+  type: "test"
+  contract: "contract.prototxt"
+  description: "This is a test configuration"
+  is_system: true
+  payload:
+    - "."
+
+  profile_fields:
+    name: "TEXT"
+    avatar: "IMAGE"
+    gender: "CATEGORICAL"
+
+local_deploy:
+  name: "example_modelr"
+  runtime:
+    repository: "hydrosphere/serving-runtime-dummy"
+    tag: "latest"
+  port: 9091
+  build: "this is Dockerfile buildscript"

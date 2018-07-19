@@ -1,0 +1,13 @@
+model:
+  name: "partial_model"
+  type: "test"
+  contract: "contract.prototxt"
+  is_system: true
+  payload:
+    - "."
+
+  profile_fields:
+    name: "TEXT"
+    avatar: "IMAGE"
+    gender: "CATEGORICAL"
+

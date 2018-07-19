@@ -72,6 +72,10 @@ UPLOAD_PORT_HELP = """
 Hydroserving manager port. Can be set with {}_PORT environment variable.
 """.format(CONTEXT_SETTINGS[AUTO_ENVVAR_PREFIX])
 
+SYSTEM_HELP = """
+Set if model should be in 'system' namespace.
+"""
+
 UPLOAD_SOURCE_HELP = """
 Hydroserving model source. 
 Define if you want to specify where to put model.
