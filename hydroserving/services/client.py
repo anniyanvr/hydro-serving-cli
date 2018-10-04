@@ -6,14 +6,17 @@ from hydroserving.services.config import ConfigService
 
 
 class HttpService:
-    def __init__(self, config_service):
+    def __init__(self, config_service, override_server=None):
         """
 
         Args:
             config_service (ConfigService):
         """
         self.config_service = config_service
-        self.connection = self.get_connection()
+        if override_server is None:
+            self.connection = self._get_connection()
+        else:
+            self.connection = RemoteConnection(override_server)
 
     def get(self, url):
         return self.connection.get(url)
@@ -39,7 +42,7 @@ class HttpService:
     def monitoring_api(self):
         return MonitoringAPI(self.connection)
 
-    def get_connection(self):
+    def _get_connection(self):
         """
 
         Returns :

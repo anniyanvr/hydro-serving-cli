@@ -9,10 +9,16 @@ from hydroserving.models.context_object import ContextObject, ContextServices
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.version_option(message="%(prog)s version %(version)s")
+@click.option('--override-server',
+              default=None,
+              required=False)
 @click.pass_context
-def hs_cli(ctx):
+def hs_cli(ctx, override_server):
     if not os.path.isdir(HOME_PATH_EXPANDED):
         os.mkdir(HOME_PATH_EXPANDED)
     ctx.obj = ContextObject()
 
-    ctx.obj.services = ContextServices.with_config_path(HOME_PATH_EXPANDED)
+    if override_server is not None:
+        click.echo('Warning: Current server is overridden to {}'.format(override_server))
+
+    ctx.obj.services = ContextServices.with_config_path(HOME_PATH_EXPANDED, override_server)

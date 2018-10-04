@@ -14,7 +14,7 @@ class ConfigService:
         if os.path.isfile(self.config_path):
             self.config = self.confparser.parse_yaml(self.config_path)
         else:
-            logging.error("{} is not an existing directory", home_path)
+            print("Home dir doesn't exist", home_path)
             self.config = Config()
             self.confparser.write_yaml(self.config_path, self.config)
 

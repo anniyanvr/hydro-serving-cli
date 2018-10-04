@@ -32,17 +32,18 @@ class ContextServices:
         self.http = http
 
     @staticmethod
-    def with_config_path(path):
+    def with_config_path(path, override_server=None):
         """
         Instantiates base services.
         Args:
+            override_server (str or None):
             path (str): path to home folder
 
         Returns:
             ContextServices
         """
         config_service = ConfigService(path)
-        http_service = HttpService(config_service)
+        http_service = HttpService(config_service, override_server)
         return ContextServices(
             config=config_service,
             http=http_service

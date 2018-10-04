@@ -1,5 +1,6 @@
 from json import JSONDecodeError
 import requests
+from requests import Request
 from requests_toolbelt.multipart.encoder import MultipartEncoder, MultipartEncoderMonitor
 
 from hydroserving.httpclient.errors import ResponseIsNotJson, HSApiError
@@ -7,6 +8,7 @@ from hydroserving.httpclient.errors import ResponseIsNotJson, HSApiError
 
 class RemoteConnection:
     def __init__(self, remote_addr):
+        Request(url=remote_addr).prepare()  # check if url is ok
         self.remote_addr = remote_addr
 
     def compose_url(self, url):
